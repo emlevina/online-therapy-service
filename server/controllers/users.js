@@ -59,8 +59,18 @@ const login = async (req, res) => {
     }
 }
 
-const token = async (req, res) => {
+const getToken = (req, res) => {
+    const { _id, email } = req
+    const accessToken = jwt.sign({ _id, email }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: '60s'
+    })
 
+    res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        maxAge: 60000
+    })
+
+    res.json({ accessToken })
 }
 
 const getUsers = async (req, res) => {
@@ -69,5 +79,5 @@ const getUsers = async (req, res) => {
 }
 
 module.exports = {
-    register, login, getUsers
+    register, login, getUsers, getToken
 }
