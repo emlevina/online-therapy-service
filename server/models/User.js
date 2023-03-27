@@ -13,11 +13,12 @@ const UserSchema = new mongoose.Schema({
     }, 
     email:{
         type: String,
+        unique: true,
         required: [true, 'must provide email'],
         trim: true,
         maxlength: [200, 'email cannot be more than 200 chars']
     }, 
-    password:{
+    hashPassword:{
         type: String,
         required: [true, 'must provide password'],
         maxlength: [72, 'password cannot be more than 72 chars']
