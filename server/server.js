@@ -1,13 +1,16 @@
 const express = require('express');
+const connectDB = require('./config/db');
+const users_router = require('./routes/users')
+
 const app = express();
 require('dotenv').config();
-const connectDB = require('./config/db');
 
 const port = process.env.PORT || 3005
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use('/', users_router)
 
 const start = async () => {
     try {
