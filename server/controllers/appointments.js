@@ -1,16 +1,25 @@
 const Appointment = require('../models/Appointment')
+const User = require('../models/User')
 
 const getTherapistAppointments = async (req, res) => {
     try {
-        console.log(req.params.therapistId)
+        // console.log(req.params.therapistId)
+        const therapistId = req.params.therapistId
+        const therapist = await User.findById(therapistId)
+        if(!therapist || therapist.role !== 'therapist'){
+            return res.status(404).json({msg: 'The therapist does not exist'})
+        }
+
         const list = await Appointment.find({
-            therapistId: req.params.therapistId,
+            therapistId,
             isBooked: false
         })
-        res.json(list)
+
+        res.status(200).json(list)
+
     } catch (e) {
         // add better error handling
-        res.json({ msg: 'nothing' })
+        res.status().json({ msg: 'Therapist not found' })
     }
 }
 const getUserAppointments = async (req, res) => {
@@ -22,10 +31,10 @@ const getUserAppointments = async (req, res) => {
         const list = await Appointment.find({
             userId
         })
-        res.json(list)
+        res.status(200).json(list)
     } catch (e) {
         // add better error handling
-        res.json({ msg: 'nothing' })
+        res.status(400).json({ msg: 'An error occured' })
     }
 }
 
@@ -35,12 +44,12 @@ const bookAppointment = async (req, res) => {
         const { _id: userId } = req
         const userCurrentAppointments = await Appointment.find({ userId })
         if (userCurrentAppointments.length) {
-            return res.status(400).json({ msg: 'You cannot have 2 appointments' })
+            return res.status(403).json({ msg: 'You cannot have 2 appointments' })
         }
 
         const appointment = await Appointment.findById(appointmentId)
         if (appointment.isBooked) {
-            return res.status(400).json({ msg: 'This time is already booked' })
+            return res.status(403).json({ msg: 'This time is already booked' })
         }
 
         await Appointment.findByIdAndUpdate(appointmentId, {
@@ -51,7 +60,7 @@ const bookAppointment = async (req, res) => {
         res.status(200).json({ msg: 'Booked successfully' })
     } catch (e) {
         // add better error handling
-        res.json({ msg: 'nothing' })
+        res.status(400).json({ msg: 'An error occured' })
     }
 }
 const cancelAppointment = async (req, res) => {
@@ -61,7 +70,7 @@ const cancelAppointment = async (req, res) => {
         const appointment = await Appointment.findById(appointmentId)
 
         if (appointment.userId != userId) {
-            return res.status(400).json({ msg: "You cannot cancel other user appointment" })
+            return res.status(403).json({ msg: "You cannot cancel other user appointment" })
         }
 
         await Appointment.findByIdAndUpdate(appointmentId, {
@@ -71,7 +80,7 @@ const cancelAppointment = async (req, res) => {
         res.status(200).json({ msg: 'Cancelled successfully' })
     } catch (e) {
         // add better error handling
-        res.json({ msg: 'nothing' })
+        res.status(400).json({ msg: 'An error occured' })
     }
 }
 
