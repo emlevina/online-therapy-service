@@ -4,13 +4,10 @@ import axios from 'axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import { Snackbar, Alert } from '@mui/material'
 
 import { AppContext } from '../App';
@@ -31,7 +28,7 @@ const LoginReg = ({ title }) => {
 
     const [backendError, setBackendError] = useState('')
     const navigate = useNavigate()
-    const { setAccessToken } = useContext(AppContext);
+    const { accessToken, setAccessToken } = useContext(AppContext);
 
     const [openError, setOpenError] = React.useState(false);
 
@@ -52,6 +49,8 @@ const LoginReg = ({ title }) => {
     useEffect(() => {
         setBackendError('')
     }, [])
+
+    
 
     const handleAction = async (e) => {
         let formValid = true
@@ -91,7 +90,7 @@ const LoginReg = ({ title }) => {
                         email, password
                     })
                     console.log(response.data)
-                    setAccessToken(response.data)
+                    setAccessToken(response.data.accessToken)
                     navigate('/')
                 } catch (error) {
                     console.log(error.response.data)
