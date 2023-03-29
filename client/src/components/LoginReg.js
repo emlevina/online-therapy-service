@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -15,6 +15,8 @@ import { AppContext } from '../App';
 const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const LoginReg = ({ title }) => {
+    const navigate = useNavigate()
+    const { setAccessToken } = useContext(AppContext);
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -22,39 +24,18 @@ const LoginReg = ({ title }) => {
     const [emailValid, setEmailValid] = useState(true)
 
     const [emailError, setEmailError] = useState('')
-    const [passwordError, setPasswordError] = useState('')
 
     const [showPassword, setShowPassword] = useState(false)
 
-    const [backendError, setBackendError] = useState('')
-    const navigate = useNavigate()
-    const { accessToken, setAccessToken } = useContext(AppContext);
+    const [backendMsg, setBackendMsg] = useState({})
+    const [openMsg, setOpenMsg] = useState(false);
 
-    const [openError, setOpenError] = React.useState(false);
-
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpenError(false);
-    };
-
+    const handleCloseSnackbar = (event, reason) => setOpenMsg(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (e) => e.preventDefault();
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    useEffect(() => {
-        setBackendError('')
-    }, [])
-
-    
-
-    const handleAction = async (e) => {
+    const verifyFields = () => {
         let formValid = true
-        e.preventDefault()
 
         if (!checkEmail(email)) {
             setEmailValid(false)
@@ -69,43 +50,42 @@ const LoginReg = ({ title }) => {
             formValid = false
         }
 
-        if (!formValid) return
+        return formValid
+    }
 
-        switch (title) {
-            case 'Register':
-                try {
-                    let response = await axios.post('/register', {
-                        email, password
-                    })
-                    console.log(response.data)
-                } catch (error) {
-                    console.log(error.response.data)
-                    setBackendError(error.response.data.msg)
-                    setOpenError(true)
-                }
-                break
-            case 'Login':
-                try {
-                    let response = await axios.post('/login', {
-                        email, password
-                    })
-                    console.log(response.data)
-                    setAccessToken(response.data.accessToken)
-                    navigate('/')
-                } catch (error) {
-                    console.log(error.response.data)
-                    setBackendError(error.response.data.msg)
-                    setOpenError(true)
-                }
-                break
-            default:
-                break;
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if (!verifyFields()) return
+
+        try {
+            if (title === 'Login') {
+                let response = await axios.post('/login', {
+                    email, password
+                })
+                // console.log(response.data)
+                setAccessToken(response.data.accessToken)
+                navigate('/')
+            } else if (title === 'Register') {
+                let response = await axios.post('/register', {
+                    email, password
+                })
+                setBackendMsg({ msg: response.data.msg, type: 'success' })
+                setOpenMsg(true)
+                // console.log(response.data)
+                navigate('/login')
+                setPassword('')
+            }
+
+        } catch (e) {
+            console.log(e.response.data)
+            setBackendMsg({ msg: e.response.data.msg, type: 'error' })
+            setOpenMsg(true)
         }
     }
     return (
         <div>
             <h1>{title}</h1>
-            <Box component='form' sx={{ m: 1 }} noValidate autoComplete='off' onSubmit={handleAction} >
+            <Box component='form' sx={{ m: 1 }} noValidate autoComplete='off' onSubmit={handleSubmit} >
                 <TextField
                     id='email'
                     label='Email'
@@ -150,12 +130,12 @@ const LoginReg = ({ title }) => {
 
                 <Button variant="contained" type='submit'>{title}</Button>
             </Box>
-            <Snackbar open={openError}
+            <Snackbar open={openMsg}
                 autoHideDuration={6000}
-                onClose={handleClose}
+                onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'bottom', horizontal: "center" }}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                    {backendError}
+                <Alert onClose={handleCloseSnackbar} severity={backendMsg.type} sx={{ width: '100%' }}>
+                    {backendMsg.msg}
                 </Alert>
             </Snackbar>
 

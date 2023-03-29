@@ -9,11 +9,11 @@ const register = async (req, res) => {
         const { email, password, fname, lname } = req.body
 
         if (password.length <= 8) {
-            throw new Error('Password must be longer than 8 symbols')
+            return res.status(403).json({ msg: 'Password must be longer than 8 symbols' })
         }
         const isEmailValid = await emailCheck.isValid(email)
         if (!isEmailValid) {
-            throw new Error('Email is not valid')
+            return res.status(403).json({ msg: 'Email is not valid' })
         }
 
         const salt = await bcrypt.genSalt();
@@ -22,10 +22,10 @@ const register = async (req, res) => {
         const newUser = await User.create({
             email, hashPassword, fname, lname
         })
-        res.status(200).json(newUser)
+        res.status(200).json({ msg: 'Registered successfully' })
     } catch (e) {
         console.log(e)
-        res.status(400).json({ errorClass: e.constructor.name, error: e.message })
+        res.status(400).json({ msg: 'User with this email already exists' })
     }
 }
 
@@ -33,11 +33,6 @@ const generateToken = (req, res, { _id, email }) => {
     const accessToken = jwt.sign({ _id, email }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: process.env.ACCESS_TOKEN_EXP
     })
-
-    // res.cookie('accessToken', accessToken, {
-    //     httpOnly: true,
-    //     maxAge: 60 * 60 * 1000
-    // })
 
     res.json({ accessToken })
 }
@@ -54,7 +49,7 @@ const login = async (req, res) => {
 
         const match = await bcrypt.compare(req.body.password, hashPassword)
         if (!match) {
-            return res.status(400).json({ msg: "Wrong password" })
+            return res.status(401).json({ msg: "Wrong password" })
         }
 
         generateToken(req, res, { _id, email })
@@ -73,13 +68,23 @@ const getToken = (req, res) => {
 }
 
 const getUsers = async (req, res) => {
-    const users = await User.find({})
-    res.json(users.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
+    try {
+        const users = await User.find({})
+        res.json(users.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
+    } catch (e) {
+        res.status(400).json({ msg: 'Some error occured' })
+    }
+
 }
 
 const getTherapists = async (req, res) => {
-    const users = await User.find({ role: 'therapist' })
-    res.json(users.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
+    try {
+        const therapists = await User.find({ role: 'therapist' })
+        res.json(therapists.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
+    } catch (e) {
+        res.status(400).json({ msg: 'Some error occured' })
+    }
+    
 }
 
 module.exports = {

@@ -17,10 +17,11 @@ const Auth = (props) => {
                     }
                 })
                 //setAccessToken(response.data.accessToken)
-                console.log(response.data)
+                // console.log(response.data)
                 setRedirect(true)
             } catch (e) {
                 console.log(e.response.data.msg)
+                setAccessToken('')
                 navigate('/login')
             }
         }
