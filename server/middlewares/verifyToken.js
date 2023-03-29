@@ -3,9 +3,9 @@ const User = require('../models/User')
 
 const verifyToken = (req, res, next) => {
     try {
-        const accessToken = req.cookies.accessToken
-
-        if (!accessToken) {
+        const authHeader = req.headers.authorization;
+        const accessToken = authHeader?.split(" ")[1];
+        if (!authHeader || !accessToken) {
             return res.status(401).json({ msg: 'No access token provided' })
         }
 
@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
             const user = await User.find({
                 email: decoded.email
             })
-            
+
             if (user.length) {
                 return next()
             } else {

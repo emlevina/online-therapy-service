@@ -29,6 +29,19 @@ const register = async (req, res) => {
     }
 }
 
+const generateToken = (req, res, { _id, email }) => {
+    const accessToken = jwt.sign({ _id, email }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: process.env.ACCESS_TOKEN_EXP
+    })
+
+    // res.cookie('accessToken', accessToken, {
+    //     httpOnly: true,
+    //     maxAge: 60 * 60 * 1000
+    // })
+
+    res.json({ accessToken })
+}
+
 const login = async (req, res) => {
     try {
         const user = await User.find({ email: req.body.email });
@@ -37,22 +50,14 @@ const login = async (req, res) => {
             return res.status(404).json({ msg: 'Email not found' })
         }
         const { _id, email, hashPassword } = user[0]
-        console.log(email)
+        //console.log(email)
 
         const match = await bcrypt.compare(req.body.password, hashPassword)
         if (!match) {
             return res.status(400).json({ msg: "Wrong password" })
         }
-        const accessToken = jwt.sign({ _id, email }, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '60s'
-        })
 
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            maxAge: 60000
-        })
-
-        res.json({ accessToken })
+        generateToken(req, res, { _id, email })
 
     } catch (error) {
         console.log(error)
@@ -61,17 +66,10 @@ const login = async (req, res) => {
 }
 
 const getToken = (req, res) => {
-    const { _id, email } = req
-    const accessToken = jwt.sign({ _id, email }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '60s'
-    })
+    //    const { _id, email } = req
 
-    res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        maxAge: 60000
-    })
-
-    res.json({ accessToken })
+    //generateToken(req, res, { _id, email })
+    res.status(200).json({ msg: 'Token verified' })
 }
 
 const getUsers = async (req, res) => {
@@ -79,6 +77,11 @@ const getUsers = async (req, res) => {
     res.json(users.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
 }
 
+const getTherapists = async (req, res) => {
+    const users = await User.find({ role: 'therapist' })
+    res.json(users.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
+}
+
 module.exports = {
-    register, login, getUsers, getToken
+    register, login, getUsers, getToken, getTherapists
 }
