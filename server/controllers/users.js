@@ -70,7 +70,7 @@ const getToken = (req, res) => {
 const getUsers = async (req, res) => {
     try {
         const users = await User.find({})
-        res.json(users.map(({ _id, email, fname, lname }) => ({ _id, email, fname, lname })))
+        res.json(users.map(({ _id, email, fname, lname, role }) => ({ _id, email, fname, lname, role })))
     } catch (e) {
         res.status(400).json({ msg: 'Some error occured' })
     }

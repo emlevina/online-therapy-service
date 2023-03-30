@@ -12,11 +12,13 @@ const AppointmentSchema = new mongoose.Schema({
     },
     startTime: {
         type: Number,
-        required: [true, 'Time slot must have some time']
+        required: [true, 'Time slot must have some time'],
+        min: [0, 'Time should be between 0 and 24'],
+        max: [24, 'Time should be between 0 and 24']
     },
     isBooked: {
         type: Boolean,
-        default: null
+        default: false
     },
     userId: {
         default: null,
