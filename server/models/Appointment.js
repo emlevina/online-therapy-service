@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { createCustomError } = require('../errors/customError')
 
 const AppointmentSchema = new mongoose.Schema({
     therapistId: {
@@ -23,8 +24,20 @@ const AppointmentSchema = new mongoose.Schema({
     userId: {
         default: null,
         type: mongoose.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        index: {
+            unique: true,
+            partialFilterExpression: { userId: { $type: "objectId" } }
+        }
     }
 })
+
+AppointmentSchema.post('findOneAndUpdate', function (err, doc, next) {
+    if (err.code && err.code == 11000) {
+        next(createCustomError('One user cannot have 2 appointments.', 409))
+    } else {
+        next(err);
+    }
+});
 
 module.exports = mongoose.model('Appointment', AppointmentSchema)
