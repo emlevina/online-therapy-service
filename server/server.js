@@ -1,23 +1,8 @@
-const express = require('express');
 const connectDB = require('./config/db');
-const cookieParser = require('cookie-parser');
-const users_router = require('./routes/users');
-const appointments_router = require('./routes/appointments');
-const { handleErrors } = require('./middlewares/handleErrors')
-
-const app = express();
+const app = require('./app')
 require('dotenv').config();
 
 const port = process.env.PORT || 3005
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-
-app.use('/appointments', appointments_router)
-app.use('/', users_router)
-
-app.use(handleErrors)
 
 const start = async () => {
     try {

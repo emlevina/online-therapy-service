@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const catchErrorsAsync = require('../middlewares/catchErrorsAsync')
+const catchErrorsAsync = require('../middleware/catchErrorsAsync')
 
 const register = catchErrorsAsync(async (req, res, next) => {
     // await User.syncIndexes()

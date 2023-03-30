@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Enter a valid email address.'],
         trim: true,
         lowercase: true,
-        validate: [emailCheck.isValidSync, 'Email is not valid.'],
+        validate: [emailCheck.isValid, 'Email is not valid.'],
         maxlength: [200, 'Email cannot be more than 200 chars.']
     },
     password: {
