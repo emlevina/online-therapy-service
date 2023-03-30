@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { createCustomError } = require('../errors/customError');
-const catchErrorsAsync = require('../middlewares/catchErrorsAsync')
+const catchErrorsAsync = require('../middleware/catchErrorsAsync')
 
 const verifyToken = catchErrorsAsync((req, res, next) => {
     const authHeader = req.headers.authorization;

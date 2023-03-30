@@ -1,6 +1,6 @@
 const Appointment = require('../models/Appointment')
 const User = require('../models/User')
-const catchErrorsAsync = require('../middlewares/catchErrorsAsync')
+const catchErrorsAsync = require('../middleware/catchErrorsAsync')
 const { createCustomError } = require('../errors/customError')
 
 const getTherapistAppointments = catchErrorsAsync(async (req, res, next) => {

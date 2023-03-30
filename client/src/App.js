@@ -22,8 +22,8 @@ function App() {
         <Navbar accessToken={accessToken} setAccessToken={setAccessToken}/>
         <Routes>
           <Route path='/' element={accessToken ? <Auth><Dashboard /> </Auth> : <Landing />} />
-          <Route path='/login' element={<LoginReg title="Login" />} />
-          <Route path='/register' element={<LoginReg title="Register" />} />
+          <Route path='/login' element={<LoginReg title="Login"/>} />
+          <Route path='/register' element={<LoginReg title="Register"/>} />
         </Routes>
       </div>
     </AppContext.Provider>
