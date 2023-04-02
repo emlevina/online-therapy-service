@@ -6,14 +6,6 @@ const { createCustomError } = require('../errors/customError')
 const getTherapistAppointments = catchErrorsAsync(async (req, res, next) => {
     console.log('Controller')
     const therapistId = req.params.therapistId
-    if (!therapistId.match(/^[0-9a-fA-F]{24}$/)){
-        return next(createCustomError(`Provided therapist id is not valid`, 400))
-    }
-    const therapist = await User.findById(therapistId)
-
-    if (!therapist || therapist.role !== 'therapist') {
-        return next(createCustomError(`The therapist with id ${therapistId} does not exist`, 404))
-    }
 
     const therapistAppointments = await Appointment.find({
         therapistId,
