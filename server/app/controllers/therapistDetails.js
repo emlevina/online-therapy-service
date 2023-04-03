@@ -13,7 +13,23 @@ const getTherapistDetails = catchErrorsAsync(async (req, res, next) => {
     res.status(200).json(therapistDetails)
 })
 
+const filterTherapistsByDetails = catchErrorsAsync(async (req, res, next) => {
+    // const filter = req.body
+    const { methods, themes } = req.body
+    const filter = {}
+    if (methods) {
+        filter.methods = { $all: methods }
+    }
+    if (themes) {
+        filter.themes = { $all: themes }
+    }
+    console.log(filter)
+    const therapistDetailsList = await TherapistDetails.find(filter).populate('therapistId', 'fname')
+    res.status(200).json(therapistDetailsList)
+})
+
 module.exports = {
     addTherapistDetails,
-    getTherapistDetails
+    getTherapistDetails,
+    filterTherapistsByDetails
 }

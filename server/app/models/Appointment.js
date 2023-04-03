@@ -37,16 +37,16 @@ AppointmentSchema.pre('find', async function (next) {
     console.log('I am models pre middleware')
     // console.log(this)
     //console.log(this._conditions.therapistId)
-    if (!mongoose.isValidObjectId(this._conditions.therapistId)) {
+    const _id = this._conditions.therapistId || this._conditions.userId
+
+    if (!mongoose.isValidObjectId(_id)) {
         console.log('regex check')
-        return next(createCustomError(`Provided therapist id is not valid`, 400))
+        return next(createCustomError(`Provided user id is not valid`, 400))
     }
-    const therapist = await User.findById(this._conditions.therapistId)
-    if (!therapist) {
-        return next(createCustomError('Therapist does not exist.', 404))
-    }
-    if (therapist.role !== 'therapist') {
-        return next(createCustomError('This user is not a therapist', 404))
+
+    const user = await User.findById(_id)
+    if (!user) {
+        return next(createCustomError('User does not exist.', 404))
     }
     next()
 })
@@ -62,15 +62,9 @@ AppointmentSchema.pre('save', async function (next) {
     next()
 })
 
-AppointmentSchema.pre('findOneAndUpdate', async function (err, doc, next) {
-    const user = await User.findById(this.userId)
-    if (!user) {
-        return next(createCustomError('User does not exist.', 404))
-    }
-    next()
-});
-
 AppointmentSchema.post('findOneAndUpdate', function (err, doc, next) {
+    console.log('i am post in appointment')
+    console.log(err)
     if (err.code && err.code == 11000) {
         next(createCustomError('One user cannot have 2 appointments.', 409))
     } else {

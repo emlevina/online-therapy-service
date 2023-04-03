@@ -29,12 +29,13 @@ const getUserAppointments = catchErrorsAsync(async (req, res) => {
 const bookAppointment = catchErrorsAsync(async (req, res) => {
     const { appointmentId } = req.params
     const { _id: userId } = req
-
+    console.log(req)
+    console.log(appointmentId, userId)
     const appointment = await Appointment.findById(appointmentId)
     if (appointment.isBooked) {
         return res.status(403).json({ msg: 'This time is already booked' })
     }
-
+    
     await Appointment.findByIdAndUpdate(appointmentId, {
         userId,
         isBooked: true
@@ -60,10 +61,10 @@ const cancelAppointment = catchErrorsAsync(async (req, res) => {
 })
 
 const createAppointment = catchErrorsAsync(async (req, res) => {
-    const { _id } = req
+    const { _id, isAdmin } = req
     const { therapistId, date, startTime } = req.body
-    if (_id !== therapistId) {
-        return res.status(401).json({ msg: 'Only the therapist can create appointment' })
+    if (_id !== therapistId && !isAdmin) {
+        return res.status(401).json({ msg: 'Only the therapist or admin can create appointment' })
     }
 
     const appointment = await Appointment.create({

@@ -44,20 +44,12 @@ const Dashboard = () => {
 
     useEffect(() => {
         const getTherapists = async () => {
-            const response = await axios.get('/therapists', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
+            const response = await axios.get('/therapists')
             // console.log('therapists: ', response.data)
             setTherapists(response.data)
         }
         const getCurrentAppointment = async () => {
-            const response = await axios.get('/appointments/user', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
+            const response = await axios.get('/appointments/user')
             // console.log('currentAppoinment: ', response.data)
             setCurrentAppointment(response.data[0])
         }
