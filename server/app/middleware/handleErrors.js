@@ -3,12 +3,18 @@ const { CustomAPIError } = require('../errors/customError')
 const handleDuplicateKeyError = (err, res) => {
     const field = Object.keys(err.keyValue);
     const code = 409;
-    const error = `An account with that ${field} already exists.`;
+    const error = `A document with that ${field} already exists.`;
     res.status(code).send({ msg: error });
 }
 
 const handleValidationError = (err, res) => {
-    let errors = Object.values(err.errors).map(el => el.message);
+    let errors = Object.values(err.errors).map(el => {
+        //console.log(el)
+        if(el.name === 'CastError'){
+            return `${el.path} should be of type ${el.kind}.`
+        }
+        return el.message
+    });
     let fields = Object.values(err.errors).map(el => el.path);
     let code = 400;
     if (errors.length > 1) {
@@ -26,7 +32,7 @@ const handleCustomError = (err, res) => {
 
 const handleErrors = (err, req, res, next) => {
     console.log('I am handling')
-    console.log(err)
+    //console.log(err)
     try {
         if (err instanceof CustomAPIError) return err = handleCustomError(err, res);
         if (err.name === 'ValidationError') return err = handleValidationError(err, res);

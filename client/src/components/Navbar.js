@@ -16,6 +16,7 @@ const Navbar = ({ accessToken, setAccessToken }) => {
             <Auth>
                 <Stack direction='row' spacing={2}>
                     <Button onClick={() => navigate('/')} >Home</Button>
+                    <Button onClick={() => navigate('/filter')}>Filter</Button>
                     <Button onClick={logout} >Logout</Button>
                 </Stack>
             </Auth>

@@ -18,15 +18,18 @@ const verifyToken = catchErrorsAsync((req, res, next) => {
         req._id = decoded._id
         req.email = decoded.email
 
-        const user = await User.find({
-            email: decoded.email
-        })
-
-        if (user.length) {
+        const user = await User.findById(decoded._id)
+        console.log(user)
+        if (user) {
+            if (user.role === 'admin') {
+                req.isAdmin = true
+            }
             return next()
         } else {
             return next(createCustomError('No such user', 404))
         }
+
+
     })
 })
 
