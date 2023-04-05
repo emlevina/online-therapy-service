@@ -21,12 +21,12 @@ const generateToken = (req, res, { _id, email }) => {
 }
 
 const login = catchErrorsAsync(async (req, res) => {
-    const user = await User.find({ email: req.body.email });
-    if (!user.length) {
+    const user = await User.findOne({ email: req.body.email }).select('+password');
+    if (!user) {
         return res.status(404).json({ msg: 'Email not found' })
     }
-    const { _id, email, password } = user[0]
-    //console.log(email)
+    const { _id, email, password } = user
+    console.log(email, password)
     const match = await bcrypt.compare(req.body.password, password)
     if (!match) {
         return res.status(401).json({ msg: "Wrong password" })
@@ -43,20 +43,21 @@ const getToken = (req, res) => {
 
 const getUsers = catchErrorsAsync(async (req, res) => {
     const users = await User.find({})
-    const usersWithoutPasswords = users.map(({ _id, email, fname, lname, role }) => (
-        { _id, email, fname, lname, role }
-    ))
-    res.status(200).json(usersWithoutPasswords)
+    res.status(200).json(users)
 })
 
 const getTherapists = catchErrorsAsync(async (req, res) => {
     const therapists = await User.find({ role: 'therapist' })
-    const therapistsWithoutPasswrods = therapists.map(({ _id, email, fname, lname, role }) => (
-        { _id, email, fname, lname, role }
-    ))
-    res.status(200).json(therapistsWithoutPasswrods)
+    res.status(200).json(therapists)
+})
+
+const getCurrentUser = catchErrorsAsync(async (req, res) => {
+    const { _id } = req
+    const user = await User.findById(_id).populate('therapistId')
+    
+    res.status(200).json(user)
 })
 
 module.exports = {
-    register, login, getUsers, getToken, getTherapists
+    register, login, getUsers, getToken, getTherapists, getCurrentUser
 }

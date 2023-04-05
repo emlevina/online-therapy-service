@@ -26,7 +26,8 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Enter a password.'],
-        minLength: [8, 'Password should be at least 8 characters.']
+        minLength: [8, 'Password should be at least 8 characters.'],
+        select: false
     },
     passwordConfirm: {
         type: String,
@@ -42,6 +43,15 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'therapist', 'admin'],
         default: 'user'
+    },
+    therapistId: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        default: null,
+    },
+    userpic: {
+        type: String,
+        default: 'https://png.pngtree.com/png-vector/20190917/ourmid/pngtree-not-found-circle-icon-vectors-png-image_1737851.jpg'
     }
 })
 
@@ -59,5 +69,20 @@ UserSchema.post('save', function (err, doc, next) {
         next(err);
     }
 });
+
+UserSchema.pre('findOneAndUpdate', async function (next) {
+    console.log('pre find one and update user')
+    //console.log(this)
+    if(this.therapistId){
+        const therapist = await User.findById(this.therapistId)
+        if(!therapist){
+            return next(createCustomError('Therapist does not exist.', 404))
+        }
+        if(therapist.role !== 'therapist'){
+            return next(createCustomError('This user is not a therapist', 404))
+        }
+    }
+    next()
+})
 
 module.exports = mongoose.model('User', UserSchema)

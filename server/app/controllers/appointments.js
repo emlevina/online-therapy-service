@@ -15,21 +15,20 @@ const getTherapistAppointments = catchErrorsAsync(async (req, res, next) => {
     res.status(200).json(therapistAppointments)
 })
 
-const getUserAppointments = catchErrorsAsync(async (req, res) => {
+const getUserAppointment = catchErrorsAsync(async (req, res) => {
     const { _id: userId } = req
     if (!userId) {
         res.status(400).json({ msg: 'No user id in request' })
     }
-    const list = await Appointment.find({
+    const appointment = await Appointment.findOne({
         userId
-    })
-    res.status(200).json(list)
+    }).populate('therapistId')
+    res.status(200).json(appointment)
 })
 
 const bookAppointment = catchErrorsAsync(async (req, res) => {
     const { appointmentId } = req.params
     const { _id: userId } = req
-    console.log(req)
     console.log(appointmentId, userId)
     const appointment = await Appointment.findById(appointmentId)
     if (appointment.isBooked) {
@@ -78,7 +77,7 @@ const createAppointment = catchErrorsAsync(async (req, res) => {
 
 module.exports = {
     getTherapistAppointments,
-    getUserAppointments,
+    getUserAppointment,
     bookAppointment,
     cancelAppointment,
     createAppointment

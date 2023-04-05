@@ -4,13 +4,44 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+
+  palette: {
+    primary: {
+      main: '#42b2fc',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#333333',
+      contrastText: '#fff',
+    },
+  },
+
+  components: {
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          fontWeight: 300
+        }
+      }
+    }
+  }
+}
+
+
+
+);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

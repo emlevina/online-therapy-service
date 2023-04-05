@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect, useDebugValue } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -14,8 +14,8 @@ import { AppContext } from '../App';
 
 const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
-const LoginReg = ({ title }) => {
-    const navigate = useNavigate()
+const LoginReg = ({ action }) => {
+    const navigate = useNavigate();
     const { setAccessToken } = useContext(AppContext);
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -32,14 +32,27 @@ const LoginReg = ({ title }) => {
     const [backendMsg, setBackendMsg] = useState({})
     const [openMsg, setOpenMsg] = useState(false);
 
+
+    const text = action === 'signin' ? {
+        h1: 'Sign in to your account',
+        title: 'sign in'
+    } : {
+        h1: 'Sign up to be able to choose a therapist',
+        p: 'Our service have 12345 therapist ready to help you',
+        title: 'sign up'
+    }
+
     const handleCloseSnackbar = (event, reason) => setOpenMsg(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (e) => e.preventDefault();
 
-    useEffect(() => { 
+    useEffect(() => {
         setPassword('')
         setPasswordConfirm('')
-    }, [title])
+        setPasswordValid(true)
+        setPasswordConfirmValid(true)
+        setEmailValid(true)
+    }, [action])
 
     const verifyFields = () => {
         let formValid = true
@@ -57,7 +70,7 @@ const LoginReg = ({ title }) => {
             formValid = false
         }
 
-        if (title === 'Register' && passwordConfirm !== password) {
+        if (action === 'signup' && passwordConfirm !== password) {
             setPasswordConfirmValid(false)
             formValid = false
         }
@@ -68,9 +81,9 @@ const LoginReg = ({ title }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!verifyFields()) return
-
+        console.log(action)
         try {
-            if (title === 'Login') {
+            if (action === 'signin') {
                 let response = await axios.post('/login', {
                     email, password
                 })
@@ -78,7 +91,7 @@ const LoginReg = ({ title }) => {
                 // console.log(response.data)
                 setAccessToken(response.data.accessToken)
                 navigate('/')
-            } else if (title === 'Register') {
+            } else if (action === 'signup') {
                 let response = await axios.post('/register', {
                     email, password, passwordConfirm
                 })
@@ -94,14 +107,31 @@ const LoginReg = ({ title }) => {
             setOpenMsg(true)
         }
     }
+
+
+    const endAdornment = (
+        <InputAdornment position="end">
+            <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+            >
+                {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+            </IconButton>
+        </InputAdornment>
+    )
+
     return (
-        <div>
-            <h1>{title}</h1>
-            <Box component='form' sx={{ m: 1 }} noValidate autoComplete='off' onSubmit={handleSubmit} >
+        <div className='flex flex-col items-center gap-5'>
+            <div className='w-1/3 max-w-sm'>
+                <h1 className='text-2xl text-stone-900 font-semibold'>{text.h1}</h1>
+                {text.p && <p>{text.p}</p>}
+            </div>
+            <form className='flex flex-col gap-2 w-1/2 max-w-sm' noValidate autoComplete='off' onSubmit={handleSubmit}>
                 <TextField
                     id='email'
                     label='Email'
-                    sx={{ m: 1 }}
                     variant='outlined'
                     value={email}
                     onChange={(e) => {
@@ -116,7 +146,6 @@ const LoginReg = ({ title }) => {
                 <TextField
                     id='password'
                     label='Password'
-                    sx={{ m: 1 }}
                     variant='outlined'
                     value={password}
                     onChange={(e) => {
@@ -128,25 +157,13 @@ const LoginReg = ({ title }) => {
                     type={showPassword ? 'text' : 'password'}
                     helperText={passwordValid ? ' ' : 'Password should be longer than 8 symbols'}
                     InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                        endAdornment,
                     }} />
 
-                {title === 'Register' && (
+                {action === 'signup' && (
                     <TextField
                         id='passwordConfirm'
                         label='Confirm password'
-                        sx={{ m: 1 }}
                         variant='outlined'
                         value={passwordConfirm}
                         onChange={(e) => {
@@ -172,8 +189,8 @@ const LoginReg = ({ title }) => {
                             ),
                         }} />)}
 
-                <Button variant="contained" type='submit'>{title}</Button>
-            </Box>
+                <Button disabled={!password || !email ? true : false} variant="contained" type='submit' className='self-center'>{text.title}</Button>
+            </form>
             <Snackbar open={openMsg}
                 autoHideDuration={6000}
                 onClose={handleCloseSnackbar}
@@ -182,7 +199,6 @@ const LoginReg = ({ title }) => {
                     {backendMsg.msg}
                 </Alert>
             </Snackbar>
-
         </div>
     );
 };
