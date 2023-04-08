@@ -4,7 +4,7 @@ const { verifyToken } = require('../middleware/verifyToken')
 const router = express.Router()
 
 router.post('/', verifyToken, addTherapistDetails)
-router.post('/filter', verifyToken, filterTherapistsByDetails)
+router.post('/filter', filterTherapistsByDetails)
 router.get('/:therapistId', verifyToken, getTherapistDetails)
 
 module.exports = router

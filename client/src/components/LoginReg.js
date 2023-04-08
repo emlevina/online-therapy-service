@@ -1,16 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import InputAdornment from '@mui/material/InputAdornment';
+import { InputAdornment, TextField, Button, IconButton, Snackbar, Alert } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import IconButton from '@mui/material/IconButton';
-import { Snackbar, Alert } from '@mui/material'
-
-import { AppContext } from '../App';
+import { AppContext } from '../context/AppContext';
+import { login, register } from '../actions'
 
 const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
@@ -84,21 +78,17 @@ const LoginReg = ({ action }) => {
         console.log(action)
         try {
             if (action === 'signin') {
-                let response = await axios.post('/login', {
-                    email, password
-                })
+                let response = await login({ email, password })
                 console.log('logging')
-                // console.log(response.data)
+                console.log(response.data)
                 setAccessToken(response.data.accessToken)
                 navigate('/')
             } else if (action === 'signup') {
-                let response = await axios.post('/register', {
-                    email, password, passwordConfirm
-                })
+                let response = await register({ email, password, passwordConfirm })
                 setBackendMsg({ msg: response.data.msg, type: 'success' })
                 setOpenMsg(true)
                 // console.log(response.data)
-                navigate('/login')
+                navigate('/auth')
             }
 
         } catch (e) {

@@ -27,6 +27,7 @@ const handleValidationError = (err, res) => {
 
 const handleCustomError = (err, res) => {
     console.log('I am custom')
+    console.log(err)
     res.status(err.statusCode).json({ msg: err.message });
 }
 
@@ -38,6 +39,7 @@ const handleErrors = (err, req, res, next) => {
         if (err.name === 'ValidationError') return err = handleValidationError(err, res);
         if (err.code && err.code == 11000) return err = handleDuplicateKeyError(err, res);
     } catch (err) {
+        console.log(err)
         res
             .status(500)
             .send('An unknown error occurred.');

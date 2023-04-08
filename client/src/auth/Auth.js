@@ -1,7 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getToken } from '../actions';
 import axios from 'axios';
-import { AppContext } from '../App';
+import { AppContext } from '../context/AppContext';
 
 const Auth = (props) => {
     const [redirect, setRedirect] = useState(false)
@@ -9,25 +10,22 @@ const Auth = (props) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
         const verify = async () => {
             try {
-                const response = await axios.get('/token', {
-                    headers: {
-                        Authorization: 'Bearer ' + accessToken
-                    }
-                })
-                //setAccessToken(response.data.accessToken)
-                // console.log(response.data)
-                setRedirect(true)
+                const response = await getToken()
+                    setRedirect(true)
             } catch (e) {
                 console.log(e.response.data.msg)
                 setAccessToken('')
-                navigate('/login')
+                navigate('/auth')
             }
         }
 
         verify()
-    }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [accessToken])
 
     return redirect ? props.children : null
 };

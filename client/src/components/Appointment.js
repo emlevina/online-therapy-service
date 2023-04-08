@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { DashboardContext } from './Dashboard';
-import axios from 'axios';
 import { LoadingButton } from '@mui/lab';
 import { formatTimestamp } from '../utils/formatTimestamp';
+import { bookAppointment, cancelAppointment } from '../actions'
 
 const Appointment = ({ appointment }) => {
     const [isBooked, setIsBooked] = useState(appointment.isBooked)
@@ -14,7 +14,11 @@ const Appointment = ({ appointment }) => {
     const toggleAppointment = async () => {
         setIsLoading(true)
         try {
-            await axios.put(`/appointments/${isBooked ? 'cancel' : 'book'}/${appointment._id}`)
+            if(isBooked){
+                await cancelAppointment(appointment._id)
+            } else {
+                await bookAppointment(appointment._id)
+            }
             setIsBooked(prev => !prev)
             setTriggerRender(prev => !prev)
         } catch (e) {

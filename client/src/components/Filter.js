@@ -17,9 +17,9 @@ const Filter = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response1 = await axios.get('/methods')
+            const response1 = await axios.get('/api/methods')
             setMethods(response1.data)
-            const response2 = await axios.get('/themes')
+            const response2 = await axios.get('/api/themes')
             setThemes(response2.data)
         }
 
@@ -39,7 +39,7 @@ const Filter = () => {
         }, { methods: [], themes: [] })
         // const array 
         console.log(reduced)
-        const response = await axios.post('/therapistdetails/filter', reduced)
+        const response = await axios.post('/api/therapistdetails/filter', reduced)
         console.log(response.data)
     }
     return (

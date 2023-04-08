@@ -5,6 +5,8 @@ const appointmentsRouter = require('./routes/appointments');
 const themesRouter = require('./routes/themes');
 const methodsRouter = require('./routes/methods');
 const therapistDetailsRouter = require('./routes/therapistDetails');
+const messagesRouter = require('./routes/messages');
+const convosRouter = require('./routes/conversations');
 const { handleErrors } = require('./middleware/handleErrors');
 
 const app = express();
@@ -13,12 +15,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/appointments', appointmentsRouter)
-app.use('/themes', themesRouter)
-app.use('/methods', methodsRouter)
-app.use('/therapistdetails', therapistDetailsRouter)
-app.use('/', usersRouter)
+//app.use(express.static(path.resolve(__dirname, '../../client/build')));
+
+app.use('/api/appointments', appointmentsRouter);
+app.use('/api/themes', themesRouter);
+app.use('/api/methods', methodsRouter);
+app.use('/api/therapistdetails', therapistDetailsRouter);
+app.use('/api/messages', messagesRouter);
+app.use('/api/conversations', convosRouter);
+app.use('/api/', usersRouter);
 
 app.use(handleErrors)
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
+// });
 
 module.exports = app
