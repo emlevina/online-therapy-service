@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext, createContext, useCallback } from 'react';
-import { useFetch } from '../hooks/useFetch';
-import { AppContext } from '../context/AppContext';
-import Appointment from './Appointment';
-import { Button, Dialog } from '@mui/material';
-import Chat from './Chat';
-import { getTherapists, getCurrentAppointment, getTherapistAppointments } from '../actions';
-import ConvoContextProvider from '../providers/convoContextProvider';
-
-export const DashboardContext = createContext(null);
+import { useFetch } from '../../hooks/useFetch';
+import { AppContext } from '../../context/AppContext';
+import { ConvoContext } from '../../context/ConvoContext';
+import { DashboardContext } from './context';
+import Appointment from './components/Appointment';
+import { Button } from '@mui/material';
+import Chat from '../../features/Chat';
+import { getTherapists, getCurrentAppointment, getTherapistAppointments } from '../../actions';
+import ConvoContextProvider from '../../providers/convoContextProvider';
 
 const TherapistNameAndPic = ({ therapist, isChosen = false, setOpenChat }) => {
     return (
@@ -63,46 +63,48 @@ const AvaialableAppointments = () => {
     )
 }
 
+
+const DashboardWithTherapist = ({ currentUser, currentAppointment }) => {
+    const [openChat, setOpenChat] = useState(false);
+    const { currConvo } = useContext(ConvoContext);
+
+    return (
+        <div className='flex gap-5 justify-between items-center'>
+            <TherapistNameAndPic therapist={currentUser.therapistId} isChosen={true} setOpenChat={setOpenChat} />
+            <div className='flex-grow self-stretch flex flex-col items-center justify-center gap-2 bg-gray-100 rounded'>
+                <small>Your next appointment:</small>
+                {currentAppointment ? <Appointment appointment={currentAppointment} /> : <TherapistAppointments therapistId={currentUser.therapistId._id} />}
+            </div>
+
+            {currConvo && <Chat setOpenChat={setOpenChat} openChat={openChat} />}
+        </div>
+    )
+}
+
 const Dashboard = () => {
     const {
         data: currentAppointment,
         refetch: refetchCurrentAppointment
     } = useFetch(getCurrentAppointment)
-
-    const [openChat, setOpenChat] = useState(false);
+    const { triggerRender } = useContext(DashboardContext)
     const { accessToken, currentUser, fetchCurrentUser } = useContext(AppContext)
-    const [triggerRender, setTriggerRender] = useState(false)
 
     useEffect(() => {
         console.log('refetchcurrentappointment')
         refetchCurrentAppointment()
-        fetchCurrentUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        //fetchCurrentUser()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accessToken, triggerRender])
 
     return currentUser ? (
-        <DashboardContext.Provider value={{ setTriggerRender }}>
+        <div>
             {currentUser.therapistId && (
                 <ConvoContextProvider>
-                    <div className='flex gap-5 justify-between items-center'>
-                        <TherapistNameAndPic therapist={currentUser.therapistId} isChosen={true} setOpenChat={setOpenChat} />
-                        <div className='flex-grow self-stretch flex flex-col items-center justify-center gap-2 bg-gray-100 rounded'>
-                            <small>Your next appointment:</small>
-                            {currentAppointment ? <Appointment appointment={currentAppointment} /> : <TherapistAppointments therapistId={currentUser.therapistId._id} />}
-                        </div>
-                        <Dialog
-                            open={openChat}
-                            onClose={() => setOpenChat(false)}
-                            aria-labelledby="modal-modal-title"
-                            aria-describedby="modal-modal-description"
-                        >
-                            <Chat />
-                        </Dialog>
-                    </div>
+                    <DashboardWithTherapist currentUser={currentUser} currentAppointment={currentAppointment} />
                 </ConvoContextProvider>
             )}
             {!currentUser.therapistId && <AvaialableAppointments />}
-        </DashboardContext.Provider>
+        </div>
     ) : null;
 };
 

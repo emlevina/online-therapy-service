@@ -1,8 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken } from '../actions';
+import { getToken } from '../../actions';
 import axios from 'axios';
-import { AppContext } from '../context/AppContext';
+import { AppContext } from '../../context/AppContext';
 
 const Auth = (props) => {
     const [redirect, setRedirect] = useState(false)

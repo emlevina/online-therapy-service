@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { InputAdornment, TextField, Button, IconButton, Snackbar, Alert } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { AppContext } from '../context/AppContext';
-import { login, register } from '../actions'
+import { AppContext } from '../../context/AppContext';
+import { login, register } from '../../actions'
 
 const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 

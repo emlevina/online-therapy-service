@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { DashboardContext } from './Dashboard';
+import { DashboardContext } from '../context';
 import { LoadingButton } from '@mui/lab';
-import { formatTimestamp } from '../utils/formatTimestamp';
-import { bookAppointment, cancelAppointment } from '../actions'
+import { formatTimestamp } from '../../../utils/formatTimestamp';
+import { bookAppointment, cancelAppointment } from '../../../actions'
 
 const Appointment = ({ appointment }) => {
     const [isBooked, setIsBooked] = useState(appointment.isBooked)

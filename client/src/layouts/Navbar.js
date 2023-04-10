@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import LockIcon from '@mui/icons-material/Lock';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ClickAwayListener, MenuList, MenuItem, Paper, Popper, Grow, Divider } from '@mui/material';
-import Auth from '../auth/Auth';
+import Auth from '../features/Auth';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 

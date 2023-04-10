@@ -27,7 +27,14 @@ const theme = createTheme({
           fontWeight: 300
         }
       }
-    }
+    },
+    // MuiDialog: {
+    //   styleOverrides: {
+    //     paperScrollPaper: {
+    //       minHeight: '90vh',
+    //     }
+    //   }
+    // }
   }
 }
 
