@@ -10,3 +10,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #59626A;
 }
+
+:root {
+  --primary-color: lightblue;
+  --secondary-color: rgb(195, 195, 195);
+}

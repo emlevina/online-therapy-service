@@ -5,6 +5,7 @@ const catchErrorsAsync = require('../middleware/catchErrorsAsync')
 
 const verifyToken = catchErrorsAsync((req, res, next) => {
     const authHeader = req.headers.authorization;
+    console.log(authHeader)
     const accessToken = authHeader?.split(" ")[1];
     if (!authHeader || !accessToken) {
         return next(createCustomError('No access token provided', 401))
@@ -14,6 +15,7 @@ const verifyToken = catchErrorsAsync((req, res, next) => {
         if (err) {
             return next(createCustomError('Verification failed', 403))
         }
+        
 
         req._id = decoded._id
         req.email = decoded.email

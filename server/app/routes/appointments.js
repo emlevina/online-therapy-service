@@ -6,7 +6,7 @@ const {
     bookAppointment,
     cancelAppointment, createAppointment
 } = require('../controllers/appointments');
-const { verifyToken } = require('../middleware/verifyToken')
+const { verifyToken } = require('../middleware/verifyToken');
 
 router.get('/therapist/:therapistId', getTherapistAppointments)
 router.get('/user', verifyToken, getUserAppointment)
