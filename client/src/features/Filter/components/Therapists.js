@@ -4,9 +4,8 @@ import TherapistNameAndPic from '../../../components/TherapistNameAndPic';
 
 const TherapistInfo = ({ therapist }) => {
     const [display, setDisplay] = useState(false)
-    console.log(therapist)
     return (
-        <div className='flex gap-5' style={display ? {} : { display: 'none' }}>
+        <div className='flex gap-5 max-h-200 items-center' style={display ? {} : { display: 'none' }}>
             <TherapistNameAndPic therapist={therapist.therapistId} />
             <TherapistAppointments therapistId={therapist.therapistId._id} setDisplay={setDisplay} />
         </div>

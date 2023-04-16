@@ -71,8 +71,6 @@ UserSchema.post('save', function (err, doc, next) {
 });
 
 UserSchema.pre('findOneAndUpdate', async function (next) {
-    console.log('pre find one and update user')
-    console.log(this)
     if (this.therapistId) {
         const therapist = await User.findById(this.therapistId)
         if (!therapist) {
@@ -83,7 +81,6 @@ UserSchema.pre('findOneAndUpdate', async function (next) {
         }
     }
     if (this._update.password) {
-        console.log('if')
         if(this._update.password.length < 8){
             return next(createCustomError('Password is not valid', 400))
         }

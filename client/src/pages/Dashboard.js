@@ -1,15 +1,12 @@
-import React, { useEffect, useState, useContext, createContext, useCallback } from 'react';
-import { useFetch } from '../../hooks/useFetch';
-import { AppContext } from '../../context/AppContext';
-import { ConvoContext } from '../../context/ConvoContext';
-import Appointment from '../../components/Appointment';
-import TherapistAppointments from '../../components/TherapistAppointments';
-import TherapistNameAndPic from '../../components/TherapistNameAndPic';
-import { Button } from '@mui/material';
-import Chat from '../../features/Chat';
-import { getTherapists, getCurrentAppointment, getTherapistAppointments } from '../../actions';
-import ConvoContextProvider from '../../providers/convoContextProvider';
-import Filter from '../../features/Filter'
+import React, { useEffect, useState, useContext } from 'react';
+import { AppContext } from '../context/AppContext';
+import { ConvoContext } from '../context/ConvoContext';
+import Appointment from '../components/Appointment';
+import TherapistAppointments from '../components/TherapistAppointments';
+import TherapistNameAndPic from '../components/TherapistNameAndPic';
+import Chat from '../features/Chat';
+import ConvoContextProvider from '../providers/convoContextProvider';
+import Filter from '../features/Filter'
 
 
 const DashboardWithTherapist = ({ currentUser, currentAppointment }) => {
@@ -33,8 +30,6 @@ const Dashboard = () => {
     const { accessToken, currentUser, fetchCurrentUser, currentAppointment } = useContext(AppContext)
 
     useEffect(() => {
-       // console.log('refetchcurrentappointment')
-
         fetchCurrentUser()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accessToken])

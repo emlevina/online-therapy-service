@@ -1,13 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { InputAdornment, TextField, Button, IconButton} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { InputAdornment, TextField, Button, IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { AppContext } from '../../context/AppContext';
 import { login, register } from '../../actions';
 import SnackBar from '../../components/SnackBar';
-
-export const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+import { checkEmail } from '../../utils/checkEmail';
 
 const LoginReg = ({ action }) => {
     const navigate = useNavigate();
@@ -76,29 +75,22 @@ const LoginReg = ({ action }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!verifyFields()) return
-        console.log(action)
         try {
             if (action === 'signin') {
                 let response = await login({ email, password })
-                console.log('logging')
-                console.log(response.data)
                 setAccessToken(response.data.accessToken)
                 navigate('/')
             } else if (action === 'signup') {
                 let response = await register({ email, password, passwordConfirm })
                 setBackendMsg({ msg: response.data.msg, type: 'success' })
                 setOpenMsg(true)
-                // console.log(response.data)
                 navigate('/auth')
             }
-
         } catch (e) {
-            console.log(e.response.data)
             setBackendMsg({ msg: e.response.data.msg, type: 'error' })
             setOpenMsg(true)
         }
     }
-
 
     const endAdornment = (
         <InputAdornment position="end">

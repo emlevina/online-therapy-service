@@ -27,7 +27,6 @@ const login = catchErrorsAsync(async (req, res) => {
         return res.status(404).json({ msg: 'Email not found' })
     }
     const { _id, email, password } = user
-    //console.log(email, password)
     const match = await bcrypt.compare(req.body.password, password)
     if (!match) {
         return res.status(401).json({ msg: "Wrong password" })
@@ -36,8 +35,6 @@ const login = catchErrorsAsync(async (req, res) => {
 })
 
 const getToken = (req, res) => {
-    //    const { _id, email } = req
-
     //generateToken(req, res, { _id, email })
     res.status(200).json({ msg: 'Token verified' })
 }
@@ -62,7 +59,6 @@ const getCurrentUser = catchErrorsAsync(async (req, res) => {
 const updateCurrentUser = catchErrorsAsync(async (req, res) => {
     const { _id } = req
     const user = await User.findByIdAndUpdate(_id, req.body)
-
     res.status(201).json({ msg: 'Info updated' })
 })
 

@@ -9,8 +9,7 @@ const handleDuplicateKeyError = (err, res) => {
 
 const handleValidationError = (err, res) => {
     let errors = Object.values(err.errors).map(el => {
-        //console.log(el)
-        if(el.name === 'CastError'){
+        if (el.name === 'CastError') {
             return `${el.path} should be of type ${el.kind}.`
         }
         return el.message
@@ -26,23 +25,18 @@ const handleValidationError = (err, res) => {
 }
 
 const handleCustomError = (err, res) => {
-    console.log('I am custom')
-    // console.log(err)
     res.status(err.statusCode).json({ msg: err.message });
 }
 
 const handleErrors = (err, req, res, next) => {
-    console.log('I am handling')
-    //console.log(err)
     try {
         if (err instanceof CustomAPIError) return err = handleCustomError(err, res);
         if (err.name === 'ValidationError') return err = handleValidationError(err, res);
         if (err.code && err.code == 11000) return err = handleDuplicateKeyError(err, res);
     } catch (err) {
-        //console.log(err)
         res
             .status(500)
-            .send('An unknown error occurred.');
+            .json({ msg: 'An unknown error occurred.' });
     }
 }
 

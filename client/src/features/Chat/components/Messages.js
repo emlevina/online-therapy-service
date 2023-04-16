@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const Message = ({ message: { text, date }, isMyMessage }) => {
     return (
@@ -10,10 +10,6 @@ const Message = ({ message: { text, date }, isMyMessage }) => {
 }
 
 const Messages = ({ messages, currentUser}) => {
-    useEffect(()=>{
-
-    }, [])
-
     return (
         <div className='flex flex-col break-all gap-2' refs="scrolldiv" >
             {messages.map(message => <Message key={message._id} message={message} isMyMessage={currentUser._id === message.sender} />)}

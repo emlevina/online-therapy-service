@@ -5,10 +5,10 @@ export const useFetch = (callback, args = []) => {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState(null)
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const memoizedCallback = useCallback(() => callback(...args), [])
 
     const fetch = useCallback(async () => {
-        //setLoading(true)
         try {
             const response = await memoizedCallback()
             setData(response.data)
@@ -17,20 +17,20 @@ export const useFetch = (callback, args = []) => {
         } finally {
             setLoading(false)
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const refetch = async (args) => {
         setLoading(true)
-        console.log('refetching')
         try {
             const response = await callback(...args)
-            console.log(response)
             setData(response.data)
         } catch (err) {
             console.log(err)
             setError(err)
-        }
-        setLoading(false)
+        } finally {
+            setLoading(false)
+        } 
     }
 
 

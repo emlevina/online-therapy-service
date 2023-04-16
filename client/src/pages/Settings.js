@@ -6,7 +6,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import SnackBar from '../components/SnackBar';
 import { Link } from 'react-router-dom';
-import { checkEmail } from '../features/LoginReg'
+import { checkEmail } from '../utils/checkEmail';
 
 const Settings = () => {
     const { currentUser, fetchCurrentUser } = useContext(AppContext)
@@ -23,7 +23,7 @@ const Settings = () => {
     useEffect(() => {
         if (currentUser) {
             setEmail(currentUser.email)
-            setFname(currentUser.fname)
+            setFname(currentUser.fname || '')
         }
     }, [currentUser])
     const updateField = (updatedInfo) => {
@@ -34,7 +34,6 @@ const Settings = () => {
                 fetchCurrentUser()
             })
             .catch(err => {
-                console.log(err)
                 setBackendMsg({ msg: err.response.data.msg || 'Server is not available', type: 'error' })
                 setOpenMsg(true)
             })

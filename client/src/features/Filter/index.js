@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useForm, Controller } from "react-hook-form";
-import {
-    Button,
-    FormGroup,
-    FormControlLabel,
-    Checkbox,
-    FormLabel
-} from '@mui/material';
-import axios from 'axios';
+import { Button, FormControlLabel, Checkbox } from '@mui/material';
 import { useFetch } from '../../hooks/useFetch';
 import { getMethods, getThemes, getTherapistDetailsFiltered } from '../../actions';
 import Therapists from './components/Therapists';
@@ -19,21 +12,17 @@ const Filter = () => {
     const { handleSubmit, control } = useForm();
 
     const onSubmit = async (data) => {
-        //console.log(data)
         const reduced = Object.entries(data).reduce((acc, item) => {
             if (item[1]) {
                 const [type, _id] = item[0].split('_')
-
                 acc = { ...acc, [type]: [...acc[type], _id] }
-
             }
             return acc
         }, { methods: [], themes: [] })
-        // const array 
-        console.log(reduced)
 
         refetchTherapists([reduced])
     }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
 
@@ -71,7 +60,7 @@ const Filter = () => {
                         checked={false}
                         defaultValue={false}
                         render={({ field }) => <Checkbox
-                        size="small" 
+                            size="small"
                             value={theme._id} {...field} />}
                     />
                 }
