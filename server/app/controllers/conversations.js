@@ -8,7 +8,6 @@ const createConversation = catchErrorsAsync(async (req, res) => {
 })
 
 const getConversation = catchErrorsAsync(async (req, res) => {
-    //console.log(req.params.id1, req.params.id2)
     const conv = await Conversation.findOne({
         $and: [{ participants: req.params.id1 }, { participants: req.params.id2 }]
     })

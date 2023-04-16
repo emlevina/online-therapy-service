@@ -34,13 +34,9 @@ const AppointmentSchema = new mongoose.Schema({
 })
 
 AppointmentSchema.pre('find', async function (next) {
-    console.log('I am models pre middleware')
-    // console.log(this)
-    //console.log(this._conditions.therapistId)
     const _id = this._conditions.therapistId || this._conditions.userId
 
     if (!mongoose.isValidObjectId(_id)) {
-        console.log('regex check')
         return next(createCustomError(`Provided user id is not valid`, 400))
     }
 
@@ -63,23 +59,14 @@ AppointmentSchema.pre('save', async function (next) {
 })
 
 AppointmentSchema.pre('findOneAndUpdate', async function (next) {
-    console.log('I am pre find and update appointment')
     if (this._update.isBooked) {
-        console.log('I am pre find and update appointment if isBooked')
         const docToUpdate = await this.model.findOne(this.getQuery());
-        console.log(docToUpdate)
-        //console.log(this._conditions)
-        //console.log(this._update.userId)
         const user = await User.findByIdAndUpdate(this._update.userId, {therapistId: docToUpdate.therapistId})
-        console.log('updated user')
     }
     next()
 })
 
 AppointmentSchema.post('findOneAndUpdate', function (err, doc, next) {
-    console.log('i am post in appointment')
-    //console.log(this)
-    // console.log(err)
     if (err.code && err.code == 11000) {
         next(createCustomError('One user cannot have 2 appointments.', 409))
     } else {

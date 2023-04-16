@@ -14,7 +14,6 @@ const getTherapistDetails = catchErrorsAsync(async (req, res, next) => {
 })
 
 const filterTherapistsByDetails = catchErrorsAsync(async (req, res, next) => {
-    // const filter = req.body
     const { methods, themes } = req.body
     const filter = {}
     if (methods.length) {
@@ -23,7 +22,6 @@ const filterTherapistsByDetails = catchErrorsAsync(async (req, res, next) => {
     if (themes.length) {
         filter.themes = { $all: themes }
     }
-    console.log(filter)
     const therapistDetailsList = await TherapistDetails.find(filter).populate('therapistId')
     res.status(200).json(therapistDetailsList)
 })

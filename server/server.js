@@ -8,7 +8,7 @@ require('dotenv').config();
 const port = process.env.PORT || 3005
 
 const server = http.createServer(app);
-// SOCKET IO
+
 const io = new Server(server, {
     cors: {
         origin: 'http://localhost:3000',
@@ -21,14 +21,12 @@ io.on('connection', (socket) => {
     console.log(`User connected ${socket.id}`);
 
     socket.on('choose_convers', (data) => {
-        // console.log('choose_convers', data)
         const { currentUser, currConvo } = data
-        // socket.join(currConvo._id)
+        socket.join(currConvo._id)
     });
     
 
     socket.on('send_message', (data) => {
-        // console.log("send_message", data)
         const { currConvo, value, currentUser } = data
         let __createdtime__ = Date.now();
 

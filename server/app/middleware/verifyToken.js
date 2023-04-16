@@ -5,7 +5,6 @@ const catchErrorsAsync = require('../middleware/catchErrorsAsync')
 
 const verifyToken = catchErrorsAsync((req, res, next) => {
     const authHeader = req.headers.authorization;
-    // console.log(authHeader)
     const accessToken = authHeader?.split(" ")[1];
     if (!authHeader || !accessToken) {
         return next(createCustomError('No access token provided', 401))
@@ -21,7 +20,6 @@ const verifyToken = catchErrorsAsync((req, res, next) => {
         req.email = decoded.email
 
         const user = await User.findById(decoded._id)
-        // console.log(user)
         if (user) {
             if (user.role === 'admin') {
                 req.isAdmin = true

@@ -4,7 +4,6 @@ const catchErrorsAsync = require('../middleware/catchErrorsAsync')
 const { createCustomError } = require('../errors/customError')
 
 const getTherapistAppointments = catchErrorsAsync(async (req, res, next) => {
-    console.log('Controller')
     const therapistId = req.params.therapistId
 
     const therapistAppointments = await Appointment.find({
@@ -30,7 +29,6 @@ const getUserAppointment = catchErrorsAsync(async (req, res) => {
 const bookAppointment = catchErrorsAsync(async (req, res) => {
     const { appointmentId } = req.params
     const { _id: userId } = req
-    //console.log(appointmentId, userId)
     const appointment = await Appointment.findById(appointmentId)
     if (appointment.isBooked) {
         return res.status(403).json({ msg: 'This time is already booked' })

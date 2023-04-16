@@ -23,7 +23,6 @@ const TherapistDetailsSchema = new mongoose.Schema({
 
 TherapistDetailsSchema.pre('save', async function (next) {
     const therapist = await User.findById(this.therapistId)
-    console.log(therapist)
     if(!therapist){
         return next(createCustomError('Therapist does not exist.', 404))
     }
