@@ -7,11 +7,11 @@ const Input = ({ currConvo, currentUser, socket }) => {
 
     const submitHandler = (e) => {
         e.preventDefault()
-        socket.emit('send_message', { currentUser, currConvo, value })
         createMessage(currConvo, value, currentUser)
             .then(data => {
+                socket.emit('send_message', { currentUser, currConvo, value })
                 setValue('')
-            })
+            }).catch(err => console.log(err))
 
     }
 

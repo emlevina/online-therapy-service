@@ -8,8 +8,8 @@ const createMessage = catchErrorsAsync(async (req, res) => {
 })
 
 const getMessages = catchErrorsAsync(async (req, res, next) => {
-    if (req.params.messages !== 'undefined') {
-        const messages = await Message.find(req.params)
+    if (req.params.conversationId !== 'undefined') {
+        const messages = await Message.find({ conversationId: req.params.conversationId })
         res.status(200).json(messages)
     } else {
         next(createCustomError('No conversation id in the request', 400))

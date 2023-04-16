@@ -4,7 +4,7 @@ const { createCustomError } = require('../errors/customError');
 
 const createConversation = catchErrorsAsync(async (req, res) => {
     const conv = await Conversation.create(req.body)
-    res.status(201).json({ msg: 'Conversation created' })
+    res.status(201).json(conv)
 })
 
 const getConversation = catchErrorsAsync(async (req, res) => {

@@ -23,7 +23,7 @@ const Settings = () => {
     useEffect(() => {
         if (currentUser) {
             setEmail(currentUser.email)
-            setFname(currentUser.fname)
+            setFname(currentUser.fname || '')
         }
     }, [currentUser])
     const updateField = (updatedInfo) => {

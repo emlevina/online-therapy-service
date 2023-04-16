@@ -15,11 +15,17 @@ const Chat = ({ openChat, setOpenChat }) => {
 
     useEffect(() => {
         socket.on('receive_message', (data) => {
-            refetch()
+            refetch([currConvo._id])
         });
         // Remove event socket.off('receive_message');
         return () => socket.off('receive_message');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket, refetch]);
+
+    useEffect(() => {
+        refetch([currConvo._id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currConvo])
 
     return (
         <Dialog
