@@ -14,8 +14,8 @@ const Auth = (props) => {
 
         const verify = async () => {
             try {
-                const response = await getToken()
-                    setRedirect(true)
+                await getToken()
+                setRedirect(true)
             } catch (e) {
                 console.log(e.response.data.msg)
                 setAccessToken('')
@@ -24,7 +24,7 @@ const Auth = (props) => {
         }
 
         verify()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [accessToken])
 
     return redirect ? props.children : null

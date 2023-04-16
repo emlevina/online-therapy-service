@@ -1,9 +1,8 @@
 import './App.css';
 import Dashboard from './pages/Dashboard';
 import Navbar from './layouts/Navbar';
-import Filter from './features/Filter';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import { AppContext } from './context/AppContext';
 import Auth from './features/Auth';
 import Landing from './pages/Landing';

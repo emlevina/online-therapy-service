@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { AppContext } from '../context/AppContext';
-import { ConvoContext } from '../context/ConvoContext';
 import { LoadingButton } from '@mui/lab';
 import { formatTimestamp } from '../utils/formatTimestamp';
 import { bookAppointment, cancelAppointment } from '../actions'
@@ -8,7 +7,7 @@ import { bookAppointment, cancelAppointment } from '../actions'
 const Appointment = ({ appointment }) => {
     const [isBooked, setIsBooked] = useState(appointment.isBooked)
     const [isLoading, setIsLoading] = useState(false)
-    const { fetchCurrentUser, fetchCurrentAppointment } = useContext(AppContext)
+    const { fetchCurrentAppointment } = useContext(AppContext)
     const date = formatTimestamp(appointment.date)
     const time = appointment.startTime
 

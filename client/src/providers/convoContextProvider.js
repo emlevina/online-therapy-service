@@ -20,8 +20,6 @@ export const ConvoContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (currentUser && !currConvo) {
-            //console.log(currConvo, currentUser)
-
             const someFunc = async () => {
                 let response = await getConvo(currentUser._id, currentUser.therapistId._id)
                 if (!response.data) {

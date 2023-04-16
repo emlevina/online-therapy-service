@@ -21,9 +21,6 @@ const Chat = ({ openChat, setOpenChat }) => {
         return () => socket.off('receive_message');
     }, [socket, refetch]);
 
-    // console.log('messages: ', messages)
-    // console.log('loading: ', loading)
-    // console.log('curr convo id: ', currConvo)
     return (
         <Dialog
             fullWidth={true}

@@ -10,7 +10,6 @@ const Input = ({ currConvo, currentUser, socket }) => {
         socket.emit('send_message', { currentUser, currConvo, value })
         createMessage(currConvo, value, currentUser)
             .then(data => {
-                // console.log(data)
                 setValue('')
             })
 
