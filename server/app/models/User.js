@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const emailCheck = require('node-email-check');
 const bcrypt = require('bcrypt');
-const { createCustomError } = require('../errors/customError')
+const { createCustomError } = require('../errors/customError');
 
 const UserSchema = new mongoose.Schema({
     fname: {
@@ -72,17 +72,27 @@ UserSchema.post('save', function (err, doc, next) {
 
 UserSchema.pre('findOneAndUpdate', async function (next) {
     console.log('pre find one and update user')
-    //console.log(this)
-    if(this.therapistId){
+    console.log(this)
+    if (this.therapistId) {
         const therapist = await User.findById(this.therapistId)
-        if(!therapist){
+        if (!therapist) {
             return next(createCustomError('Therapist does not exist.', 404))
         }
-        if(therapist.role !== 'therapist'){
+        if (therapist.role !== 'therapist') {
             return next(createCustomError('This user is not a therapist', 404))
         }
     }
+    if (this._update.password) {
+        console.log('if')
+        if(this._update.password.length < 8){
+            return next(createCustomError('Password is not valid', 400))
+        }
+        const salt = await bcrypt.genSalt();
+        this._update.password = await bcrypt.hash(this._update.password, salt);
+    }
     next()
 })
+
+
 
 module.exports = mongoose.model('User', UserSchema)

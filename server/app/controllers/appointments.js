@@ -9,8 +9,9 @@ const getTherapistAppointments = catchErrorsAsync(async (req, res, next) => {
 
     const therapistAppointments = await Appointment.find({
         therapistId,
-        isBooked: false
-    })
+        isBooked: false,
+        date: { $gte: new Date() }
+    }).sort({ date: 1, startTime: 1 })
 
     res.status(200).json(therapistAppointments)
 })
@@ -29,12 +30,12 @@ const getUserAppointment = catchErrorsAsync(async (req, res) => {
 const bookAppointment = catchErrorsAsync(async (req, res) => {
     const { appointmentId } = req.params
     const { _id: userId } = req
-    console.log(appointmentId, userId)
+    //console.log(appointmentId, userId)
     const appointment = await Appointment.findById(appointmentId)
     if (appointment.isBooked) {
         return res.status(403).json({ msg: 'This time is already booked' })
     }
-    
+
     await Appointment.findByIdAndUpdate(appointmentId, {
         userId,
         isBooked: true

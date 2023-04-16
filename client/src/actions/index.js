@@ -61,3 +61,19 @@ export const login = (payload) => {
 export const register = (payload) => {
     return axios.post('/api/register', payload)
 }
+
+export const getMethods = () => {
+    return axios.get('/api/methods')
+}
+
+export const getThemes = () => {
+    return axios.get('/api/themes')
+}
+
+export const getTherapistDetailsFiltered = (filter) => {
+    return axios.post('/api/therapistdetails/filter', filter)
+}
+
+export const updateCurrentUser = (updatedInfo) => {
+    return axios.put('/api/users', updatedInfo)
+}

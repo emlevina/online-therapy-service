@@ -7,6 +7,7 @@ import { ClickAwayListener, MenuList, MenuItem, Paper, Popper, Grow, Divider } f
 import Auth from '../features/Auth';
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
+import Logo from '../components/Logo';
 
 const ProfileMenu = ({ name, logout }) => {
     const [open, setOpen] = React.useState(false);
@@ -83,7 +84,7 @@ const ProfileMenu = ({ name, logout }) => {
                                     <MenuItem onClick={handleClose}>
                                         <Link to='/'>Dashboard</Link>
                                     </MenuItem>
-                                    <MenuItem onClick={handleClose} disabled>
+                                    <MenuItem onClick={handleClose}>
                                         <Link to='/settings'>Settings</Link>
                                     </MenuItem>
                                     <Divider />
@@ -126,9 +127,7 @@ const Navbar = () => {
     return (
         <header className="p-4 shadow-md shadow-slate-200">
             <nav className='container mx-auto flex row justify-between flex-nowrap items-center'>
-                <NavLink className="" to='/'>
-                    <img className="" alt="Ясно" src="https://assets.yasno.live/assets/logo-v3-5ca0495679167f6fe34df2f192ac48b2249b048fff2c9a6484effc52bda9ae0c.svg" />
-                </NavLink>
+                <Logo />
                 {children}
             </nav>
         </header>

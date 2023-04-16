@@ -68,8 +68,8 @@ AppointmentSchema.pre('findOneAndUpdate', async function (next) {
         console.log('I am pre find and update appointment if isBooked')
         const docToUpdate = await this.model.findOne(this.getQuery());
         console.log(docToUpdate)
-        console.log(this._conditions)
-        console.log(this._update.userId)
+        //console.log(this._conditions)
+        //console.log(this._update.userId)
         const user = await User.findByIdAndUpdate(this._update.userId, {therapistId: docToUpdate.therapistId})
         console.log('updated user')
     }

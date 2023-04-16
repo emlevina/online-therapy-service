@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-const catchErrorsAsync = require('../middleware/catchErrorsAsync')
+const catchErrorsAsync = require('../middleware/catchErrorsAsync');
+const { cancelAppointment } = require('./appointments')
 
 const register = catchErrorsAsync(async (req, res, next) => {
     // await User.syncIndexes()
@@ -26,7 +27,7 @@ const login = catchErrorsAsync(async (req, res) => {
         return res.status(404).json({ msg: 'Email not found' })
     }
     const { _id, email, password } = user
-    console.log(email, password)
+    //console.log(email, password)
     const match = await bcrypt.compare(req.body.password, password)
     if (!match) {
         return res.status(401).json({ msg: "Wrong password" })
@@ -54,10 +55,17 @@ const getTherapists = catchErrorsAsync(async (req, res) => {
 const getCurrentUser = catchErrorsAsync(async (req, res) => {
     const { _id } = req
     const user = await User.findById(_id).populate('therapistId')
-    
+
     res.status(200).json(user)
 })
 
+const updateCurrentUser = catchErrorsAsync(async (req, res) => {
+    const { _id } = req
+    const user = await User.findByIdAndUpdate(_id, req.body)
+
+    res.status(201).json({ msg: 'Info updated' })
+})
+
 module.exports = {
-    register, login, getUsers, getToken, getTherapists, getCurrentUser
+    register, login, getUsers, getToken, getTherapists, getCurrentUser, updateCurrentUser
 }

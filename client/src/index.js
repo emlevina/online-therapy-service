@@ -28,13 +28,6 @@ const theme = createTheme({
         }
       }
     },
-    // MuiDialog: {
-    //   styleOverrides: {
-    //     paperScrollPaper: {
-    //       minHeight: '90vh',
-    //     }
-    //   }
-    // }
   }
 }
 

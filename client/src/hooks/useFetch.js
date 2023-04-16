@@ -1,24 +1,37 @@
 import { useEffect, useState, useCallback } from 'react';
 
-import axios from 'axios';
-
-export const useFetch = (callback) => {
+export const useFetch = (callback, args = []) => {
     const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [data, setData] = useState(null)
 
-    const _callback = useCallback(callback, [])
+    const memoizedCallback = useCallback(() => callback(...args), [])
 
     const fetch = useCallback(async () => {
-        setLoading(true)
+        //setLoading(true)
         try {
-            const response = await _callback()
+            const response = await memoizedCallback()
             setData(response.data)
         } catch (err) {
             setError(err)
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+    const refetch = async (args) => {
+        setLoading(true)
+        console.log('refetching')
+        try {
+            const response = await callback(...args)
+            console.log(response)
+            setData(response.data)
+        } catch (err) {
+            console.log(err)
+            setError(err)
         }
         setLoading(false)
-    }, [_callback])
+    }
 
 
     useEffect(() => {
@@ -29,6 +42,7 @@ export const useFetch = (callback) => {
         error,
         loading,
         data,
-        refetch: fetch
+        refetch,
+        fetch
     }
 }

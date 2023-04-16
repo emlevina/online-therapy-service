@@ -1,13 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { DashboardContext } from '../context';
+import { AppContext } from '../context/AppContext';
+import { ConvoContext } from '../context/ConvoContext';
 import { LoadingButton } from '@mui/lab';
-import { formatTimestamp } from '../../../utils/formatTimestamp';
-import { bookAppointment, cancelAppointment } from '../../../actions'
+import { formatTimestamp } from '../utils/formatTimestamp';
+import { bookAppointment, cancelAppointment } from '../actions'
 
 const Appointment = ({ appointment }) => {
     const [isBooked, setIsBooked] = useState(appointment.isBooked)
     const [isLoading, setIsLoading] = useState(false)
-    const { setTriggerRender } = useContext(DashboardContext)
+    const { fetchCurrentUser, fetchCurrentAppointment } = useContext(AppContext)
     const date = formatTimestamp(appointment.date)
     const time = appointment.startTime
 
@@ -20,11 +21,11 @@ const Appointment = ({ appointment }) => {
                 await bookAppointment(appointment._id)
             }
             setIsBooked(prev => !prev)
-            setTriggerRender(prev => !prev)
         } catch (e) {
             console.log(e.response.data)
         } finally {
             setIsLoading(false)
+            fetchCurrentAppointment()
         }
     }
 

@@ -11,7 +11,7 @@ import { useFetch } from '../../hooks/useFetch';
 const Chat = ({ openChat, setOpenChat }) => {
     const { currentUser } = useContext(AppContext)
     const { currConvo, socket } = useContext(ConvoContext)
-    const { data: messages, refetch, loading } = useFetch(() => getMessages(currConvo._id))
+    const { data: messages, refetch, loading } = useFetch(getMessages, [currConvo._id])
 
     useEffect(() => {
         socket.on('receive_message', (data) => {

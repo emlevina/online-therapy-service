@@ -17,14 +17,14 @@ const filterTherapistsByDetails = catchErrorsAsync(async (req, res, next) => {
     // const filter = req.body
     const { methods, themes } = req.body
     const filter = {}
-    if (methods) {
+    if (methods.length) {
         filter.methods = { $all: methods }
     }
-    if (themes) {
+    if (themes.length) {
         filter.themes = { $all: themes }
     }
     console.log(filter)
-    const therapistDetailsList = await TherapistDetails.find(filter).populate('therapistId', 'fname')
+    const therapistDetailsList = await TherapistDetails.find(filter).populate('therapistId')
     res.status(200).json(therapistDetailsList)
 })
 

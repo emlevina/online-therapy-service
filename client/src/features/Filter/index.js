@@ -8,23 +8,15 @@ import {
     FormLabel
 } from '@mui/material';
 import axios from 'axios';
+import { useFetch } from '../../hooks/useFetch';
+import { getMethods, getThemes, getTherapistDetailsFiltered } from '../../actions';
+import Therapists from './components/Therapists';
 
 const Filter = () => {
-    const [methods, setMethods] = useState([])
-    const [themes, setThemes] = useState([])
-    const [msg, setMsg] = useState('')
+    const { data: methods, loading: methodsLoading } = useFetch(getMethods)
+    const { data: themes, loading: themesLoading } = useFetch(getThemes)
+    const { data: therapists, loading: therapistsLoading, refetch: refetchTherapists } = useFetch(getTherapistDetailsFiltered, [{ methods: [], themes: [] }])
     const { handleSubmit, control } = useForm();
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const response1 = await axios.get('/api/methods')
-            setMethods(response1.data)
-            const response2 = await axios.get('/api/themes')
-            setThemes(response2.data)
-        }
-
-        fetchData()
-    }, [])
 
     const onSubmit = async (data) => {
         //console.log(data)
@@ -39,13 +31,14 @@ const Filter = () => {
         }, { methods: [], themes: [] })
         // const array 
         console.log(reduced)
-        const response = await axios.post('/api/therapistdetails/filter', reduced)
-        console.log(response.data)
+
+        refetchTherapists([reduced])
     }
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
 
             <h2>Methods</h2>
+            {(!methods && methodsLoading) && <p>Methods are loading...</p>}
             {methods && methods.map(method => (
                 <FormControlLabel
                     label={method.title}
@@ -58,6 +51,7 @@ const Filter = () => {
                             checked={false}
                             defaultValue={false}
                             render={({ field }) => <Checkbox
+                                size="small"
                                 value={method._id} {...field} />}
                         />
                     }
@@ -65,6 +59,7 @@ const Filter = () => {
             ))}
 
             <h2>Themes</h2>
+            {(!themes && themesLoading) && <p>Themes are loading...</p>}
             {themes && themes.map(theme => <FormControlLabel
                 label={theme.title}
                 key={theme._id}
@@ -76,12 +71,15 @@ const Filter = () => {
                         checked={false}
                         defaultValue={false}
                         render={({ field }) => <Checkbox
+                        size="small" 
                             value={theme._id} {...field} />}
                     />
                 }
             />)}
-
+            <br />
             <Button variant='contained' type='submit'>Search</Button>
+            {therapistsLoading && 'loading...'}
+            {!therapistsLoading && <Therapists therapists={therapists} />}
         </form>
     );
 };

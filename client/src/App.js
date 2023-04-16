@@ -2,7 +2,7 @@ import './App.css';
 import Dashboard from './pages/Dashboard';
 import Navbar from './layouts/Navbar';
 import Filter from './features/Filter';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import { AppContext } from './context/AppContext';
 import Auth from './features/Auth';
@@ -11,7 +11,7 @@ import Footer from './layouts/Footer';
 import Wrapper from './layouts/Wrapper';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import { DashboardContextProvider } from './pages/Dashboard/providers';
+import Settings from './pages/Settings';
 
 function App() {
   const { accessToken } = useContext(AppContext)
@@ -21,10 +21,11 @@ function App() {
       <Navbar />
       <Wrapper>
         <Routes>
-          <Route path='/filter' element={<Filter />} />
-          <Route path='/' element={accessToken ? <Auth><DashboardContextProvider><Dashboard /></DashboardContextProvider> </Auth> : <Landing />} />
+          <Route path='/' element={accessToken ? <Auth><Dashboard /> </Auth> : <Landing />} />
           <Route path='/auth' element={<Login />} />
           <Route path='/auth/signup' element={<Register />} />
+          <Route path='/settings' element={<Auth><Settings /></Auth>} />
+          <Route path="*" element={<Navigate to="/" replace />} /> 
         </Routes>
       </Wrapper>
       <Footer />

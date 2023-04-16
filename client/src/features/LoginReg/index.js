@@ -1,12 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { InputAdornment, TextField, Button, IconButton, Snackbar, Alert } from '@mui/material';
+import { InputAdornment, TextField, Button, IconButton} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { AppContext } from '../../context/AppContext';
-import { login, register } from '../../actions'
+import { login, register } from '../../actions';
+import SnackBar from '../../components/SnackBar';
 
-const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+export const checkEmail = (email) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
 
 const LoginReg = ({ action }) => {
     const navigate = useNavigate();
@@ -115,8 +116,8 @@ const LoginReg = ({ action }) => {
     return (
         <div className='flex flex-col items-center gap-5'>
             <div className='w-1/3 max-w-sm'>
-                <h1 className='text-2xl text-stone-900 font-semibold'>{text.h1}</h1>
-                {text.p && <p>{text.p}</p>}
+                <h1 className='text-2xl text-stone-900 font-semibold text-center'>{text.h1}</h1>
+                {text.p && <p className='text-center'>{text.p}</p>}
             </div>
             <form className='flex flex-col gap-2 w-1/2 max-w-sm' noValidate autoComplete='off' onSubmit={handleSubmit}>
                 <TextField
@@ -181,14 +182,7 @@ const LoginReg = ({ action }) => {
 
                 <Button disabled={!password || !email ? true : false} variant="contained" type='submit' className='self-center'>{text.title}</Button>
             </form>
-            <Snackbar open={openMsg}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'bottom', horizontal: "center" }}>
-                <Alert onClose={handleCloseSnackbar} severity={backendMsg.type} sx={{ width: '100%' }}>
-                    {backendMsg.msg}
-                </Alert>
-            </Snackbar>
+            <SnackBar openMsg={openMsg} handleCloseSnackbar={handleCloseSnackbar} backendMsg={backendMsg} />
         </div>
     );
 };

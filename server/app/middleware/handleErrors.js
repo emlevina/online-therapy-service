@@ -3,7 +3,7 @@ const { CustomAPIError } = require('../errors/customError')
 const handleDuplicateKeyError = (err, res) => {
     const field = Object.keys(err.keyValue);
     const code = 409;
-    const error = `A document with that ${field} already exists.`;
+    const error = `A user with that ${field} already exists.`;
     res.status(code).send({ msg: error });
 }
 
@@ -27,7 +27,7 @@ const handleValidationError = (err, res) => {
 
 const handleCustomError = (err, res) => {
     console.log('I am custom')
-    console.log(err)
+    // console.log(err)
     res.status(err.statusCode).json({ msg: err.message });
 }
 
@@ -39,7 +39,7 @@ const handleErrors = (err, req, res, next) => {
         if (err.name === 'ValidationError') return err = handleValidationError(err, res);
         if (err.code && err.code == 11000) return err = handleDuplicateKeyError(err, res);
     } catch (err) {
-        console.log(err)
+        //console.log(err)
         res
             .status(500)
             .send('An unknown error occurred.');
