@@ -1,4 +1,4 @@
-# About project
+# About (this not real) project
 
 Online service where you can find a proper therapist according to your request, book an appointment, chat with your therapist. It will have authentication and real-time messenger.
 In the MVP I was focused on a customer app with only basic functionality. Future versions may include dashboard for therapists and video messaging.
